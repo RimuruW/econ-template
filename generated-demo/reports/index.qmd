@@ -1,0 +1,42 @@
+---
+title: "Demo Econ 报告"
+author: "TODO 更新作者"
+date: "`r format(Sys.Date())`"
+format:
+  hikmah-academic-html:
+    toc: true
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+---
+
+```{r}
+#| label: fig-example
+#| echo: false
+#| fig-cap: "示例图表"
+#| fig-width: 6
+#| fig-height: 4
+#| dpi: 300
+library(ggplot2)
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  theme_minimal()
+```
+
+## 简介
+
+- 本报告基于 `reports/` 子项目渲染，默认使用 hikmah-academic 模板。
+- 在代码块中通过 `freeze: auto` 机制实现再现性。
+
+## 数据概览
+
+描述数据集来源、预处理流程以及关键指标。
+
+## 结果
+
+总结模型结果、图表与表格说明，引用 `fig-example` 等编号。
+
+## 结论
+
+归纳主要发现，提出后续工作或政策建议。

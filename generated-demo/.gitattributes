@@ -1,0 +1,4 @@
+data/external/** filter=lfs diff=lfs merge=lfs -text
+data/raw/** filter=lfs diff=lfs merge=lfs -text
+reports/figures/** filter=lfs diff=lfs merge=lfs -text
+*.parquet filter=lfs diff=lfs merge=lfs -text

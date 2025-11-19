@@ -1,0 +1,83 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+python_deps := "fastexcel ipython jupyter jupyterlab matplotlib notebook numpy pandas polars pyarrow pytest python-dotenv scikit-learn seaborn"
+
+default:
+	@just --list
+
+setup:
+	just git-setup
+	just python-setup
+	just r-setup
+	just quarto-setup
+	just pre-commit-setup
+
+all:
+	just data-fetch
+	just data-clean
+	just data-features
+	just model-fit
+	just export-results
+	just report
+
+git-setup:
+	if [[ "{{ 'true' if git_init else 'false' }}" == "true" ]]; then if [ ! -d ".git" ]; then git init; fi; fi
+	if [[ "{{ 'true' if git_lfs else 'false' }}" == "true" ]]; then if command -v git-lfs >/dev/null 2>&1; then git lfs install --skip-repo; git lfs track "data/external/**"; git lfs track "data/raw/**"; git lfs track "reports/figures/**"; git lfs track "*.parquet"; else echo "warning: git-lfs 未安装，已跳过 LFS 配置" >&2; fi; fi
+
+python-setup:
+	uv venv --python {{ python_version }}
+	uv sync
+{% raw %}	uv add {{ python_deps }}{% endraw %}
+
+r-setup:
+	Rscript -e "renv::consent(provided = TRUE)"
+	Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv', repos = 'https://cloud.r-project.org')"
+	Rscript -e "if (!file.exists('renv.lock')) renv::init(bare = TRUE) else renv::load()"
+	Rscript -e "if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = 'https://cloud.r-project.org')"
+	Rscript -e "pak::pak(c('languageserver', 'nx10/httpgd'))"
+	@echo "Installing common econometric packages..."
+	Rscript -e "pak::pak(c('tidyverse', 'fixest', 'modelsummary', 'marginaleffects', 'arrow', 'readxl', 'haven', 'patchwork', 'scales'))"
+	Rscript -e "renv::snapshot(prompt = FALSE)"
+
+quarto-setup:
+	if command -v quarto >/dev/null 2>&1; then (cd reports && quarto add andrewheiss/hikmah-academic-quarto --no-prompt); else echo "warning: 未检测到 quarto，可手动运行 'quarto add andrewheiss/hikmah-academic-quarto'。" >&2; fi
+
+pre-commit-setup:
+	if command -v pre-commit >/dev/null 2>&1; then pre-commit install; else echo "warning: 未检测到 pre-commit，请安装后运行 'pre-commit install'。" >&2; fi
+
+data-fetch:
+	uv run python scripts/00_fetch_data.py
+
+data-clean:
+	uv run python scripts/10_clean.py
+
+data-features:
+	uv run python scripts/20_build_features.py
+
+model-fit:
+	uv run python scripts/30_modeling.py
+
+export-results:
+	uv run python scripts/40_export_results.py
+
+report:
+	quarto render reports/
+
+report-watch:
+	(cd reports && quarto preview)
+
+check:
+	uv run ruff format --check
+	uv run ruff check
+	uv run pytest
+	Rscript -e "lintr::lint_dir()"
+	Rscript -e "styler::style_dir(dry = TRUE)"
+
+clean:
+	if [ -d data/interim ]; then find data/interim -mindepth 1 -delete; fi
+	if [ -d data/processed ]; then find data/processed -mindepth 1 -delete; fi
+	if [ -d reports/_site ]; then find reports/_site -mindepth 1 -delete; fi
+
+snapshot:
+	uv pip freeze --all > snapshots_python.txt
+	Rscript -e "renv::snapshot(prompt = FALSE)"

@@ -1,0 +1,19 @@
+project:
+  output-dir: _site
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+  message: false
+
+format:
+  hikmah-academic-html:
+    toc: true
+    number-sections: true
+
+bibliography: references.bib
+csl: csl/
+resources:
+  - figures/
+  - tables/

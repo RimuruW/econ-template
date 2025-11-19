@@ -1,0 +1,30 @@
+[project]
+name = "demo_econ"
+version = "0.1.0"
+description = "Empirical economics analysis project generated from Copier template."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "TODO Update Author" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = []
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.workspace]
+members = []
+
+[tool.uv.pip]
+generate-hashes = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.format]
+preview = true

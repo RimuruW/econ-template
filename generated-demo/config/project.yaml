@@ -1,0 +1,14 @@
+seed: 42
+table_format: parquet
+figure_format: png
+figure_dpi: 300
+naming_convention: numeric
+outputs:
+  tables_dir: reports/tables
+  figures_dir: reports/figures
+  references: reports/references.bib
+data:
+  raw: data/raw
+  external: data/external
+  interim: data/interim
+  processed: data/processed

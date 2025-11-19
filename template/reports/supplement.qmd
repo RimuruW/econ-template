@@ -1,0 +1,17 @@
+---
+title: "补充材料"
+format:
+  hikmah-academic-html:
+    toc: true
+execute:
+  echo: false
+  warning: false
+---
+
+## 附加图表
+
+在此放置补充图表或敏感性分析结果。
+
+## 附录
+
+必要时包含额外证明、数据字典或代码片段。

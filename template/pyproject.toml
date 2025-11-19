@@ -1,0 +1,31 @@
+[project]
+name = "{{ python_package }}"
+version = "0.1.0"
+description = "Empirical economics analysis project generated from Copier template."
+readme = "README.md"
+requires-python = ">={{ python_version }}"
+license = { text = "{{ license }}" }
+authors = [{ name = "TODO Update Author" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = []
+
+[dependency-groups]
+dev = []
+
+[tool.ruff]
+line-length = 88
+target-version = "py{{ python_version|replace('.', '') }}"
+
+[tool.ruff.format]
+preview = true
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.workspace]
+members = []
+
+[tool.uv.pip]
+generate-hashes = true

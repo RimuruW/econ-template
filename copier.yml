@@ -1,0 +1,44 @@
+_subdirectory: template
+_min_copier_version: "9.1.0"
+_templates_suffix: ""
+_default_destination_path: "{{ project_slug }}"
+
+project_name:
+  type: str
+  help: "项目名称（可含空格）"
+
+project_slug:
+  type: str
+  default: "{{ project_name|lower|replace(' ', '-')|replace('_', '-') }}"
+  help: "项目目录名（小写短横线）"
+
+python_package:
+  type: str
+  default: "{{ project_slug|replace('-', '_') }}"
+  help: "Python 包名称（小写下划线）"
+
+python_version:
+  type: str
+  default: "3.11"
+  help: "Python 版本（用于 uv 虚拟环境）"
+
+license:
+  type: str
+  default: "MIT"
+  choices:
+    - MIT
+  help: "许可证（当前仅支持 MIT）"
+
+git_init:
+  type: bool
+  default: true
+  help: "是否自动执行 git init"
+
+git_lfs:
+  type: bool
+  default: true
+  help: "是否自动安装并跟踪 Git LFS"
+
+_tasks:
+  - mv gitignore .gitignore
+  - just setup
