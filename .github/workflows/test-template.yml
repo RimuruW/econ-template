@@ -33,7 +33,7 @@ jobs:
 
       - name: Generate project from template
         run: |
-          uvx copier copy --trust --defaults . test-project
+          uvx copier copy --defaults . test-project
 
       - name: Run setup in generated project
         run: |

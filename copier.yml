@@ -5,6 +5,7 @@ _default_destination_path: "{{ project_slug }}"
 
 project_name:
   type: str
+  default: "My Project"
   help: "项目名称（可含空格）"
 
 project_slug:
@@ -39,6 +40,3 @@ git_lfs:
   default: true
   help: "是否自动安装并跟踪 Git LFS"
 
-_tasks:
-  - mv gitignore .gitignore
-  - just setup
