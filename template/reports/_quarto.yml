@@ -11,9 +11,12 @@ format:
   hikmah-academic-html:
     toc: true
     number-sections: true
+  html:
+    toc: true
+    number-sections: true
 
 bibliography: references.bib
-csl: csl/
+# csl: path/to/your-style.csl  # 按需指定 CSL 文件
 resources:
   - figures/
   - tables/

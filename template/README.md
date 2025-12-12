@@ -1,13 +1,11 @@
 # {{ project_name }}
 
-[![License: {{ license }}](https://img.shields.io/badge/License-{{ license }}-yellow.svg)](<https://opensource.org/licenses/{{> license }})
+[![License: {{ license }}](https://img.shields.io/badge/License-{{ license }}-yellow.svg)](https://opensource.org/licenses/{{ license }})
 
 ## 快速开始
 
 - **初始化**：`just setup` (安装 Python/R 依赖, 配置 pre-commit)
-- **日常开发**：
-  - `just data-fetch` -> `just data-clean` -> ...
-  - 或者直接 `just all` 跑通全流程
+- **日常开发**：按需创建 `scripts/` 中的脚本并在 `justfile` 中取消注释对应任务
 - **提交代码**：`just check` (运行测试与代码风格检查)
 - **生成报告**：`just report`
 
@@ -21,12 +19,15 @@
 │  ├─ raw/              # 原始数据 (只读, gitignore)
 │  ├─ interim/          # 中间数据 (parquet, gitignore)
 │  └─ processed/        # 最终清洗数据 (parquet, gitignore)
-├─ src/                 # 可复用代码库
-│  ├─ py/               # Python 模块
-│  └─ r/                # R 函数
-├─ scripts/             # 数据处理脚本 (00-40)
-├─ notebooks/           # 探索性分析 (Jupyter/RMarkdown)
+├─ src/                 # Python src 布局，可作为 package 导入
+│  └─ {{ python_package }}/   # 业务/领域模块
+├─ scripts/             # 数据处理脚本 (按编号组织)
+├─ notebooks/           # 探索性分析 (Jupyter/Quarto/RMarkdown)
 ├─ reports/             # Quarto 论文/幻灯片
+├─ results/             # 分析输出 (表格、图片、稳健性检验)
+│  ├─ tables/           # 回归表格、描述性统计
+│  ├─ figures/          # 最终论文用图
+│  └─ robustness/       # 稳健性检验结果
 ├─ tests/               # 测试用例
 └─ justfile             # 任务自动化入口
 ```
@@ -38,6 +39,20 @@
 1. **数据清洗与处理 (Python)**：使用 `polars`/`pandas` 进行繁重的数据清洗、特征工程，结果保存为 Parquet。
 2. **统计分析与绘图 (R)**：利用 R 强大的统计生态 (`fixest`, `ggplot2`) 读取 Parquet 进行回归分析和绘图。
 3. **流程编排 (Just)**：通过 `justfile` 统一管理跨语言调用。
+
+R 辅助脚本可与分析脚本一起放在 `scripts/` 或 `reports/` 中，Python 可复用代码集中在 `src/{{ python_package }}`，以便在 notebooks/scripts 中通过 package 方式导入。
+
+## scripts 编号规范
+
+按编号组织数据处理流水线（模板不预置占位脚本，按需创建）：
+
+| 编号   | 用途     | 示例                  |
+| ------ | -------- | --------------------- |
+| `00_*` | 数据获取 | `00_fetch_census.py`  |
+| `10_*` | 数据清洗 | `10_clean_panel.py`   |
+| `20_*` | 特征工程 | `20_build_controls.R` |
+| `30_*` | 建模分析 | `30_did_estimation.R` |
+| `40_*` | 结果导出 | `40_export_tables.py` |
 
 ## 数据目录约定
 

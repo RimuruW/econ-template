@@ -1,6 +1,7 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
-python_deps := "fastexcel ipython jupyter jupyterlab matplotlib notebook numpy pandas polars pyarrow pytest python-dotenv scikit-learn seaborn"
+# 核心依赖 - 按需添加更多包
+python_deps := "polars pyarrow pandas matplotlib seaborn python-dotenv"
 
 default:
 	@just --list
@@ -12,13 +13,14 @@ setup:
 	just quarto-setup
 	just pre-commit-setup
 
-all:
-	just data-fetch
-	just data-clean
-	just data-features
-	just model-fit
-	just export-results
-	just report
+# 数据流水线 - 请按需取消注释并指定脚本
+# all:
+# 	just data-fetch
+# 	just data-clean
+# 	just data-features
+# 	just model-fit
+# 	just export-results
+# 	just report
 
 git-setup:
 	if [[ "{{ 'true' if git_init else 'false' }}" == "true" ]]; then if [ ! -d ".git" ]; then git init; fi; fi
@@ -45,20 +47,22 @@ quarto-setup:
 pre-commit-setup:
 	if command -v pre-commit >/dev/null 2>&1; then pre-commit install; else echo "warning: 未检测到 pre-commit，请安装后运行 'pre-commit install'。" >&2; fi
 
-data-fetch:
-	uv run python scripts/00_fetch_data.py
+# 数据流水线任务 - 创建脚本后取消注释
+# data-fetch:
+# 	uv run python scripts/00_fetch_data.py
 
-data-clean:
-	uv run python scripts/10_clean.py
+# data-clean:
+# 	uv run python scripts/10_clean.py
 
-data-features:
-	uv run python scripts/20_build_features.py
+# data-features:
+# 	uv run python scripts/20_build_features.py
 
-model-fit:
-	uv run python scripts/30_modeling.py
+# model-fit:
+# 	uv run python scripts/30_modeling.py
 
-export-results:
-	uv run python scripts/40_export_results.py
+# export-results:
+# 	uv run python scripts/40_export_results.py
+
 
 report:
 	quarto render reports/
